@@ -11,16 +11,27 @@
 - [Contributions](#contributions)
 - [Contact](#contact)
 
+
 ### Project Overview
 ---
-What is the objective of this project? This project is intended to analyze the crimes that have ocurred in Mexico from 199X to 2023. The source was obtained from Mexico Government Official Data. 
-Our objective 
-Programming Language used through the analysis
-Which interrogants is this project trying to resolve? 
+This project is intended to explore and analyze the crimes that have been registered by the Government of Mexico.
+
+The programming language used through the analysis was python in Visual Studio Code. 
+
+During the analysis, I will try to get answer the following questions, which might be reassessed depending of the results and relevancy.
+1. Which years does the dataframe contain?
+2. What is the most registered 'type of crime'?
+3. Which is the most registered 'subtype of crime'?
+4. From the two questions above, which 'Entity' has more cases being registered? 
+5. What is their ocurrence throughout the years?
+
 
 ### Data Source
 ---
-Including the details of the dataset used: source, period covered, variables included in the analysis
+The database was obtained from an Official Mexico Government Website. For more information around: https://www.gob.mx/sesnsp/acciones-y-programas/datos-abiertos-de-incidencia-delictiva. 
+
+I do not own any of the data, this are official figures given by the Mexican government.
+
 
 ### Data Cleaning
 ---
@@ -37,11 +48,8 @@ The dataframe contains 332,416 rows and the following columns:
 - month
 - count
 
-The dataframe does not contain any NaN value. 
-
 ### Data Analysis
 ---
-Add the code used to perform the analysis and paste the tables 
 
 ### Findings 
 ---
