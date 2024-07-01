@@ -26,6 +26,19 @@ Including the details of the dataset used: source, period covered, variables inc
 ---
 Understand data population and exclude any duplicated data, evaluate the deletion of empty (NaN) rows or columns that may impact or affect the accuracy of our conclusions, including erroneous data.
 
+The dataframe contains 332,416 rows and the following columns: 
+- year
+- entity_code
+- entity
+- affected_legal_good
+- type_of_crime
+- subtype_of_crime
+- modality
+- month
+- count
+
+The dataframe does not contain any NaN value. 
+
 ### Data Analysis
 ---
 Add the code used to perform the analysis and paste the tables 
