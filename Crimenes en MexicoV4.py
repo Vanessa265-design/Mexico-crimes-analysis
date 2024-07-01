@@ -95,7 +95,7 @@ grouped_data = df.groupby(['year', 'entity_code', 'entity', 'affected_legal_good
 subtype_to_filter = 'Drug dealing'
 filtered_data_subtype = grouped_data.query(f'subtype_of_crime == "{subtype_to_filter}"')
 sns.boxplot(x='year', y='count', data=filtered_data_subtype)
-plt.title(f'Boxplot para {subtype_to_filter}')
+plt.title(f'Boxplot for {subtype_to_filter}')
 plt.show()
 
 # Boxplot 4
@@ -104,7 +104,7 @@ plt.show()
 subtype_to_filter = 'Family Violence'
 filtered_data_subtype = grouped_data.query(f'subtype_of_crime == "{subtype_to_filter}"')
 sns.boxplot(x='year', y='count', data=filtered_data_subtype)
-plt.title(f'Boxplot para {subtype_to_filter}')
+plt.title(f'Boxplot for {subtype_to_filter}')
 plt.show()
 
 # Boxplot 5
@@ -114,7 +114,7 @@ subtype_to_filter = 'Family Violence'
 
 filtered_data = grouped_data.query(f'entity == "{entity_to_filter}" and subtype_of_crime == "{subtype_to_filter}"')
 sns.boxplot(x='year', y='count', data=filtered_data)
-plt.title(f'Boxplot para {subtype_to_filter} en {entity_to_filter}')
+plt.title(f'Boxplot for {subtype_to_filter} en {entity_to_filter}')
 plt.show()
 
 # Boxplot 6
@@ -124,7 +124,7 @@ subtype_to_filter = 'Family Violence'
 
 filtered_data = grouped_data.query(f'entity == "{entity_to_filter}" and subtype_of_crime == "{subtype_to_filter}"')
 sns.boxplot(x='year', y='count', data=filtered_data)
-plt.title(f'Boxplot para {subtype_to_filter} en {entity_to_filter}')
+plt.title(f'Boxplot for {subtype_to_filter} en {entity_to_filter}')
 plt.show()
 
 
@@ -171,7 +171,7 @@ filtered_data = df[(df['year'] == year_to_filter) &
 
 sns.set(style='whitegrid')
 sns.distplot(filtered_data['count'], kde=False, norm_hist=False, bins=20)
-plt.title(f'Histograma para {subtype_to_filter} en {entity_to_filter} en {year_to_filter}')
+plt.title(f'Histogram for {subtype_to_filter} in {entity_to_filter} during {year_to_filter}')
 plt.show()
 
 from scipy.stats import skew, kurtosis
@@ -192,19 +192,20 @@ sns.distplot(asimetria_positiva, kde=False, norm_hist=False);
 # Bar Graph 
 
 ax = sns.barplot(x='type_of_crime', y='count', data=grouped_data)
-ax.set_title('Conteo de tipos de crimen en México')
-ax.set_ylabel('Conteo')
+ax.set_title('Crimes registered in Mexico')
+ax.set_ylabel('Count')
 plt.xticks(rotation=90)
 plt.show()
 
+# Bar Graph for crimes registered in Jalisco
 entity_to_filter = 'Jalisco'
 filtered_df = df[(df['entity'] == entity_to_filter)]
 
 plt.figure(figsize=(10, 6))
 sns.barplot(x='type_of_crime', y='count', data=filtered_df)
-plt.title(f'Conteo de Type of Crime en {entity_to_filter}')
-plt.xlabel('Tipo de Crimen')
-plt.ylabel('Conteo')
+plt.title(f'Crimes registered in {entity_to_filter}')
+plt.xlabel('Type of Crime')
+plt.ylabel('Count')
 plt.xticks(rotation=90)
 plt.show()
 
@@ -225,9 +226,9 @@ filtered_data = df[(df['entity'] == entity_to_filter) & (df['month'] == month_to
 contingency_table_filtered = pd.crosstab(index=filtered_data['entity'], columns=filtered_data['type_of_crime'], values=filtered_data['count'], aggfunc='sum', margins=True, margins_name='Total')
 plt.figure(figsize=(12, 10))
 sns.heatmap(contingency_table_filtered.iloc[:-1, :-1], annot=True, fmt='d', cmap='Blues')
-plt.title(f'Heatmap para Type of Crime en {entity_to_filter} - Mes {month_to_filter}')
-plt.xlabel('Tipo de Crimen')
-plt.ylabel('Entidad')
+plt.title(f'Heatmap for Type of Crime in {entity_to_filter} during {month_to_filter}')
+plt.xlabel('TYpe of Crime')
+plt.ylabel('Entity')
 plt.show()
 
 
@@ -236,34 +237,37 @@ plt.show()
 correlacion = df['year'].corr(df['count'])
 print("Coeficiente de Correlación de Pearson:", correlacion)
 
+# Scatter Plot 1
 plt.scatter(df['year'], df['count'])
-plt.title('Scatter Plot de Año vs. Cantidad de Crímenes')
-plt.xlabel('Año')
-plt.ylabel('Cantidad de Crímenes')
+plt.title('Scatter Plot')
+plt.xlabel('Year')
+plt.ylabel('Amount of Crimes registered')
 plt.show()
 
+# Scatter Plot 2
 sns.scatterplot(x='year', y='count', data=df)
-plt.title('Scatter Plot de Año vs. Cantidad de Crímenes')
-plt.xlabel('Año')
-plt.ylabel('Cantidad de Crímenes')
+plt.title('Scatter Plot')
+plt.xlabel('Year')
+plt.ylabel('Amount of Crimes registered')
 plt.show()
 
+# Correlation Matrix
 matriz_correlacion = df[['year', 'count']].corr()
 plt.figure(figsize=(8, 6))  
 sns.heatmap(matriz_correlacion, annot=True, cmap='coolwarm', fmt=".2f")
-plt.title('Mapa de Calor de Correlación')
+plt.title('Correlation Heatmap')
 plt.show()
 
 # We create 'dummy' variables for a category: 
 # A 'dummy' variable represents categoric variables in models that only accept numeric values.
 
-
+# Correlation Heatmap with dymmy variables
 df_dummy = pd.get_dummies(df, columns=['type_of_crime'])
 df_dummy = df_dummy.drop(['affected_legal_good', 'entity', 'subtype_of_crime', 'modality', 'month', 'entity_code'], axis=1)
 matriz_correlacion = df_dummy.corr()
 plt.figure(figsize=(12, 10))
 sns.heatmap(matriz_correlacion, annot=False, cmap='coolwarm')
-plt.title('Mapa de Calor de Correlación')
+plt.title('Correlation Heatmap')
 plt.show()
 
 # We change the format
@@ -272,7 +276,7 @@ df_dummy = df_dummy.drop(['affected_legal_good', 'entity', 'subtype_of_crime', '
 matriz_correlacion = df_dummy.corr()
 plt.figure(figsize=(12, 10))
 sns.heatmap(matriz_correlacion, annot=False, cmap='coolwarm', linewidths=.5, cbar_kws={"shrink": 0.75})
-plt.title('Mapa de Calor de Correlación')
+plt.title('Correlation Heatmap')
 plt.xticks(rotation=45) 
 plt.yticks(rotation=0) 
 plt.show()
@@ -286,7 +290,7 @@ umbral_correlacion = 0.2
 matriz_correlacion_filtrada = matriz_correlacion[(matriz_correlacion > umbral_correlacion) | (matriz_correlacion < -umbral_correlacion)]
 plt.figure(figsize=(10, 8))
 sns.heatmap(matriz_correlacion_filtrada, annot=False, cmap='coolwarm', linewidths=.5, cbar_kws={"shrink": 0.75})
-plt.title('Mapa de Calor de Correlación Filtrado')
+plt.title('Correlation Heatmap with filters')
 plt.xticks(rotation=45)  
 plt.yticks(rotation=0)
 plt.show()
