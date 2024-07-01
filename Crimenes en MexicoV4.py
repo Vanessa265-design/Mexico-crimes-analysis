@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  8 21:15:35 2023
-@author: vaned
-"""
-# Cuales son los tipos y subtipos de crimenes mas comunes
-
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy import stats
 import folium
+
+
+# We connect to our database and explore the columns and rows it contains
 
 df = pd.read_csv('C:/Users/vaned/Documents/Analisis con python/mexico_crime.csv')
 df.shape
@@ -17,44 +13,54 @@ df.head()
 df.tail()
 df.columns
 df.describe()
+
+
+# We look for any NaN(Not a Numeric value) and assess if we should delete them
+
 df.isna().sum()
 
+
+# Group the type_of_crime column and sum the count column, then sort it. 
+# Understand which types of crimes had more cases registered
 crime_counts = df.groupby('type_of_crime')['count'].sum()
 print (crime_counts)
 crime_counts_sorted = crime_counts.sort_values(ascending=False)
 print(crime_counts_sorted)
+
+# Group the month column and sum the count column, then sort it.
+# Understand in which month there were more cases registered
 month_counts = df.groupby('month')['count'].sum()
 month_counts_sorted = month_counts.sort_values(ascending=False)
 print(month_counts_sorted)
 
+# Group the subtype_of_crime column and sum the count column, then sort it.
 subcrime_counts = df.groupby('subtype_of_crime')['count'].sum()
 subcrime_counts_sorted = subcrime_counts.sort_values(ascending=False)
 print(subcrime_counts_sorted)
 
-# Estimados de locacion
 
-# Promedio
+# Location estimates
+
+# Mean
 print(f'Promedio: {df["count"].mean()}')
 
-# Mediana 
+# Median 
 print(f'Media: {df["count"].median()}')
 
-# Media truncada = Promedio mas robusto al eliminar un porcentaje de datos al inicio y al final
+# Truncated mean = More robust mean by removing a percentage of data at the beginning and end
 print(f'Media truncada, eliminando el 5% de datos: {stats.trim_mean(df["count"], 0.05)}')
 
-# Estimados de variabilidad, el mas comun es la desviacion estandar
-
+# Standard Deviation
 print(f'Desviacion estandar: {df["count"].std()}')
 
-# Estadisticos de orden
+
+# Order Stadistics
 
 # Range
 df['count'].max() - df['count'].min()
 
-# Percentiles (cuantiles)
-# El percentil indica que por lo menos 80% de los valores en el conjunto tienen este valor o un valor menor
-# En pandas los percentiles son cuantiles (version fracciones)
-
+# Percentiles
+# It indicates that at least a % of the dataframe have a certain value or less. 
 print(f'Valor mínimo: {df["count"].min()}')
 print(f'Percentil 10: {df["count"].quantile(0.1)}')
 print(f'Percentil 25: {df["count"].quantile(0.25)}')
@@ -65,17 +71,19 @@ print(f'Percentil 80: {df["count"].quantile(0.8)}')
 print(f'Percentil 90: {df["count"].quantile(0.9)}')
 print(f'Valor máximo: {df["count"].max()}')
 
-# Rango intercuartilico
+# Interquartile range
+# Understand to which value our data is most near - to the minimum or to the maximum
 print(f'Rango intercuartilico: {df["count"].quantile(0.75) - df["count"].quantile(0.25)}') 
-# La mayoria de los datos estàn mucho mas cerca al valor minimo que al valor maximo 
+
+
+# Visualize the distribution of our data with Boxplots
 
 # Boxplot 1
 sns.boxplot(x=df['count']).set(style="whitegrid")
 plt.show()
-# Los boxplots son una manera de visualizar la distribución de nuestros datos usando percentiles.
 
 # Boxplot 2
-# Graficamos una linea vertical justo donde esta el promedio de nuestros datos.
+# Graph a vertical line right at the average of our data
 sns.set(style="whitegrid")
 sns.boxplot(x=df['count'])
 plt.axvline(df['count'].mean(), c='y')
@@ -91,6 +99,8 @@ plt.title(f'Boxplot para {subtype_to_filter}')
 plt.show()
 
 # Boxplot 4
+# Given that the most registered 'subtype_of_crime' was 'Family Violence'
+# We want to visualize how it is distributed throughout the years
 subtype_to_filter = 'Family Violence'
 filtered_data_subtype = grouped_data.query(f'subtype_of_crime == "{subtype_to_filter}"')
 sns.boxplot(x='year', y='count', data=filtered_data_subtype)
@@ -98,6 +108,7 @@ plt.title(f'Boxplot para {subtype_to_filter}')
 plt.show()
 
 # Boxplot 5
+# We add an aditional filter, to see only the registered cases in the Capital 'Ciudad de México'
 entity_to_filter = 'Ciudad de México'
 subtype_to_filter = 'Family Violence'
 
@@ -107,6 +118,7 @@ plt.title(f'Boxplot para {subtype_to_filter} en {entity_to_filter}')
 plt.show()
 
 # Boxplot 6
+# We keep analyzing the currencies of 'Family Violence' within different states of Mexico
 entity_to_filter = 'Nuevo León'
 subtype_to_filter = 'Family Violence'
 
@@ -116,8 +128,8 @@ plt.title(f'Boxplot para {subtype_to_filter} en {entity_to_filter}')
 plt.show()
 
 
-# Score de Rango Intercuartílico (IQR-Score)
-# Filtramos los valores atipicos. Limitamos el tamaño de los bigotes y filtramos todos los datos que exceden ese limite
+# Interquartile Range Score (IQR-Score)
+# We filter the outliers. We limit the size of whiskers and filter all data that exceeds that limit
 iqr = df['count'].quantile(0.75) - df['count'].quantile(0.25)
 filtro_inferior = df['count'] > df['count'].quantile(0.25) - (iqr * 1.5)
 filtro_superior = df['count'] < df['count'].quantile(0.75) + (iqr * 1.5)
@@ -125,8 +137,8 @@ df_filtrado = df[filtro_inferior & filtro_superior]
 sns.boxplot(df_filtrado['count'])
 
 
-# Tabla de frecuencias 
-# Otra manera de ver valores atipicos
+# Table of frequency
+# Another way to look at the atipical values 
 
 counts = df['count']
 counts.max() - counts.min()
@@ -136,19 +148,19 @@ segmentos = pd.cut(counts, 20)
 df['count'].groupby(segmentos).count()
 
 
-# Histrogramas  
-# una forma de ver nuestras tablas de frecuencia 
-# El eje x es el rango de nuestros datos y se divide por segmentos
-# El eje y indica el conteo de muestras en cada segmento.
+# Histrograms 
+# Another way to see our table of frequency
+# The x axis is the range of our data and it is divided by segments 
+# The axis y indicates the count of our sample on each segment 
 sns.set(style='white')
 sns.distplot(df['count'], kde=False, norm_hist=False, bins=30)
 
-# Aumentamos el tamaño de nuestros bins para verlo con mayor granularidad 
+# We increase the size of our bins to visualize it with more granularity 
 sns.set(style='ticks')
 sns.distplot(df['count'], kde=False, norm_hist=False, bins=100)
 
 
-# Histograma con filtros 
+# Through a Histogram we want to see 'Family Violence' cases that were registered during 2022 in 'Ciudad de México' 
 year_to_filter = 2022
 entity_to_filter = 'Ciudad de México'
 subtype_to_filter = 'Family Violence'
@@ -177,7 +189,7 @@ asimetria_positiva = np.random.exponential(scale=1.0, size=10000)
 sns.distplot(asimetria_positiva, kde=False, norm_hist=False);
 
 
-# Grafica de barras
+# Bar Graph 
 
 ax = sns.barplot(x='type_of_crime', y='count', data=grouped_data)
 ax.set_title('Conteo de tipos de crimen en México')
@@ -197,7 +209,7 @@ plt.xticks(rotation=90)
 plt.show()
 
 
-# Tablas de contingencia
+# Contingency tables
 
 pd.crosstab(df['entity'], df['type_of_crime'])
 
@@ -242,8 +254,8 @@ sns.heatmap(matriz_correlacion, annot=True, cmap='coolwarm', fmt=".2f")
 plt.title('Mapa de Calor de Correlación')
 plt.show()
 
-# Tratar de crear variables dummy para una categoria: 
-# Una variable dummy es representar variables categóricas en modelos que solo aceptan entradas numéricas.
+# We create 'dummy' variables for a category: 
+# A 'dummy' variable represents categoric variables in models that only accept numeric values.
 
 
 df_dummy = pd.get_dummies(df, columns=['type_of_crime'])
@@ -254,7 +266,7 @@ sns.heatmap(matriz_correlacion, annot=False, cmap='coolwarm')
 plt.title('Mapa de Calor de Correlación')
 plt.show()
 
-# Cambiando el formato 
+# We change the format
 df_dummy = pd.get_dummies(df, columns=['type_of_crime'])
 df_dummy = df_dummy.drop(['affected_legal_good', 'entity', 'subtype_of_crime', 'modality', 'month', 'entity_code'], axis=1)
 matriz_correlacion = df_dummy.corr()
@@ -266,7 +278,7 @@ plt.yticks(rotation=0)
 plt.show()
 
 
-# Filtrando solo las correlaciones con un valor absoluto mayor a 0.2
+# Filter the correlations to an absolute value greater than 0.2
 df_dummy = pd.get_dummies(df, columns=['type_of_crime'])
 df_dummy = df_dummy.drop(['affected_legal_good', 'entity', 'subtype_of_crime', 'modality', 'month', 'entity_code'], axis=1)
 matriz_correlacion = df_dummy.corr()
@@ -280,7 +292,7 @@ plt.yticks(rotation=0)
 plt.show()
 
 
-# Filtrando por entidad y las correlaciones con un valor absoluto mayor a 0.2
+# Filter by entity and the correlations to an absolute value greater than 0.2
 entity_to_filter = 'Ciudad de México'
 umbral_correlacion = 0.2
 df_filtered = df[df['entity'] == entity_to_filter]
@@ -302,7 +314,7 @@ grouped_data['type_of_crime'].sample(n=20, replace=False)
 estados_geo = f'https://gist.githubusercontent.com/Tlaloc-Es/5c82834e5e4a9019a91123cb11f598c0/raw/709ce9126861ef7a7c7cc4afd6216a6750d4bbe1/mexico.geojson'
 m = folium.Map(location=[23.6345, -102.5528], zoom_start=5)
 
-# Filtro por el subtipo de crimen mas alto registrado:
+# Filter by the most registered subtime of crime:
 family_violence = grouped_data[grouped_data['subtype_of_crime'] == 'Family Violence']
 
 folium.Choropleth(
